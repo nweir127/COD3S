@@ -4,7 +4,7 @@ This repository houses the cod3 for
    COD3S: Diverse Generation with Discrete Semantic Signatures. In _Proceedings of EMNLP_.
 ## Installation
 1. This repository uses [conda](https://docs.conda.io/en/latest/miniconda.html) to manage packages and [Ducttape](https://github.com/jhclark/ducttape) to manage intermediate results 
-of the experiment pipeline. Follow their [quickstart guide](https://github.com/jhclark/ducttape#quick-start) to add ducttape to your path. 
+of the experiment pipeline. Follow the latter's [quickstart guide](https://github.com/jhclark/ducttape#quick-start) to add ducttape to your path. 
 
 2. `git clone git@github.com:nweir127/COD3S.git`
 3. `cd COD3S && conda env create -f environment.yml`
