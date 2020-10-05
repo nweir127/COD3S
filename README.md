@@ -7,7 +7,7 @@ This repository houses the cod3 for
 of the experiment pipeline. Follow the latter's [quickstart guide](https://github.com/jhclark/ducttape#quick-start) to add ducttape to your path. 
 
 2. `git clone git@github.com:nweir127/COD3S.git`
-3. `cd COD3S && conda env create -f environment.yml`
+3. `cd COD3S && conda env create -f environment.yml && conda activate cod3s`
 4. edit `tapes/main.tape` to point the `COD3S` package to your local repo
 
 
