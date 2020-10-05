@@ -9,6 +9,7 @@ of the experiment pipeline. Follow the latter's [quickstart guide](https://githu
 2. `git clone git@github.com:nweir127/COD3S.git`
 3. `cd COD3S && conda env create -f environment.yml && conda activate cod3s`
 4. edit `tapes/main.tape` to point the `COD3S` package to your local repo
+5. edit `tapes/submitters.tape` to point to your local `conda.sh` init script.
 
 
 To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of the following:
