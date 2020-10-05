@@ -12,6 +12,7 @@ of the experiment pipeline. Follow the latter's [quickstart guide](https://githu
 5. edit `tapes/submitters.tape` to point to your local `conda.sh` init script.
 
 
+## Running Experiments
 To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of the following:
 
 | Task           | Description                                                      |
