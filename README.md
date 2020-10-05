@@ -16,7 +16,7 @@ To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of th
 | Task           | Description                                                      |
 |----------------|------------------------------------------------------------------|
 | `download_data`| downloads the training and evaluation data              |
-| `prefix_data`  | Computes LSH signatures of all training and evaluation data      |
+| `compute_cod3s`  | Computes LSH signatures of all training and evaluation data      |
 | `train`   |              |
 
 Note that tasks will automatically run the other tasks required by their dependencies (`train` will run `download_data` etc).
