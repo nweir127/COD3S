@@ -72,7 +72,7 @@ task compute_eval_signatures calls compute_signatures : COD3S
 	:: debug=(Debug: no=0 yes=1)
 
 task compute_signatures
-	< out_dir=(Split: train=$train_out@compute_train_signatures
+	< out_dir=(Split: train=$out@compute_train_signatures
 		   		  dev=$out@compute_train_signatures
 		   		  test=$out@compute_eval_signatures)
 	> out { ln -s $out_dir $out }
