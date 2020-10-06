@@ -1,0 +1,23 @@
+name: cod3s
+channels:
+  - defaults
+dependencies:
+  - python=3.7.6
+  - pip
+  - pip:
+    - cython
+    - future==0.18.2
+    - nearpy==1.0.0
+    - numpy==1.18.2
+    - pandas==1.0.3
+    - scipy==1.4.1
+    - six==1.14.0
+    - sklearn==0.0
+    - torch==1.4.0
+    - tqdm
+    - transformers==2.4.1
+    - sentence-transformers==0.2.5.1
+    - seaborn==0.10.1
+    - matplotlib==3.2.1
+    - tabulate
+    - sacrebleu==1.4.14
