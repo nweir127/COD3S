@@ -5,81 +5,79 @@ func compute_signatures : COD3S
 	< data_dir
 	> out
 	:: source_lang target_lang split lsh_bits
-	:: gpu_id device_space distributed num_gpus
+	:: gpu_id device_space distributed
 	:: debug {
 
-	# script can only use one device
-	gpu_id_0=`echo $gpu_id | cut -f 1 -d ','`
-
-	params="--input ${data_dir}/${split}.tsv --output_dir $out --split ${split}"
-	params+=" --lsh_dim ${lsh_bits}"
-	params+=" --source_lang ${source_lang} --target_lang ${target_lang}"
-	params+=" --source_rep both,seq --target_rep both,seq"
-	params+=" --debug $debug --gpuid ${gpu_id_0}"
-	batch_size=$(($device_space / 11 ))
-	params+=" --batch_size ${batch_size}"
-
-	if [ $distributed == "yes" ]; then
-		params+=" --local_rank $((gpu_id_0 + 1)) --num_thread $num_gpus"
+	if [ $distributed == no ]; then
+		gpu_id=`echo $gpu_id | cut -f 1 -d ','`
+		num_gpus=1
+	else
+		num_gpus=$(echo $gpu_id | tr -cd , | wc -c)
+		num_gpus=$((num_gpus + 1))
 	fi
 
+	jobcounter=1
+
+	for gpu_id_0 in $(echo $gpu_id | sed "s/,/ /g"); do
+
+		params="--input ${data_dir}/${split}.tsv --output_dir worker_${gpu_id_0} --split ${split}"
+		params+=" --lsh_dim ${lsh_bits}"
+		params+=" --source_lang ${source_lang} --target_lang ${target_lang}"
+		params+=" --source_rep both,seq --target_rep both,seq"
+		params+=" --debug $debug --gpuid ${gpu_id_0}"
+		batch_size=$(($device_space / 11 ))
+		params+=" --batch_size ${batch_size}"
+
+		params+=" --local_rank $jobcounter --num_thread $num_gpus"
+
+		PYTHONPATH=$COD3S python $COD3S/src/scripts/compute_signatures.py ${params} &
+		pids[${jobcounter}]=$!
+		jobcounter=$((jobcounter + 1))
+
+	done
+
+	for pid in ${pids[*]}; do
+    	wait $pid
+	done
+
 	mkdir -p $out
-	PYTHONPATH=$COD3S python $COD3S/src/scripts/compute_signatures.py ${params}
+	for worker_out in worker_*; do
+			for f in `ls $worker_out`; do
+			cat $worker_out/$f >> $out/$f
+		done
+	done
 
 }
 
 
 
-task _compute_train_signatures calls compute_signatures : COD3S
-	< data_dir=(InferenceDirection: c2e=$so_data@data e2c=$because_data@data)
-	> out
+task compute_train_signatures calls compute_signatures : COD3S
+	< data_dir=(Direction: c2e=$so_data@data e2c=$because_data@data)
+	> train_out
 	:: source_lang=@ target_lang=@ split=@ lsh_bits=@
-	:: distributed=(DistributedPrepro: yes no)
-	:: gpu_id=(DistributedPrepro: yes=$dist_gpu_id no=$gpu_id) num_gpus=@
+	:: distributed=(Split: train="yes" dev="no" test="no")
+	:: gpu_id=$gpu_id
 	:: device_space=@
 	:: debug=(Debug: no=0 yes=1)
 
-task compute_train_signatures
-	< out=$out@_compute_train_signatures[DistGPUID:*]
-	> joined_out
-	{
-		mkdir $joined_out
-		for worker_out in $out; do
-			for f in `ls $worker_out`; do
-			cat $worker_out/$f >> $joined_out/$f
-			done
-		done
-
-}
-
-task compute_dev_signatures calls compute_signatures : COD3S
-	< data_dir=(InferenceDirection: c2e=$so_data@data e2c=$because_data@data)
-	> out
-	:: source_lang=@ target_lang=@ split=@ lsh_bits=@
-	:: distributed="no"
-	:: gpu_id=@ device_space=@
-	:: debug=(Debug: no=0 yes=1)
 
 task compute_eval_signatures calls compute_signatures : COD3S
 	< data_dir=(EvalData:
-		copa=(InferenceDirection: c2e=$cause2effect_copa@data e2c=$effect2cause_copa@data)
-		causalbank=(InferenceDirection: c2e=$cause2effect_cb@data e2c=$effect2cause_cb@data))
-	> out
+		copa=(Direction: c2e=$cause2effect_copa@data e2c=$effect2cause_copa@data)
+		causalbank=(Direction: c2e=$cause2effect_cb@data e2c=$effect2cause_cb@data))
+	> eval_out
 	:: source_lang=@ target_lang=@ split=@ lsh_bits=@
 	:: gpu_id=@ device_space=@
 	:: distributed="no"
 	:: debug=(Debug: no=0 yes=1)
 
-plan tr_e2c {
-	reach compute_train_signatures via (InferenceDirection: e2c) * (Split: train) * (Debug: no)
-#	reach compute_train_signatures via (InferenceDirection: c2e) * (Split: train) * (Debug: yes) * (DistGPUID: 4 5 6 7)
-}
+task compute_signatures
+	< out_dir=(Split: train=$train_out@compute_train_signatures
+		   		  dev=$train_out@compute_train_signatures
+		   		  test=$eval_out@compute_eval_signatures)
+	> out { ln -s $out_dir $out }
 
-plan tr_c2e {
-	reach compute_train_signatures via (InferenceDirection: c2e) * (Split: train) * (Debug: no)
+
+plan compute_cod3s {
+	reach compute_signatures via (Direction: *) * (Split: *) * (EvalData: *) * (Debug: yes)
 }
-#plan compute_cod3s {
-#	reach compute_train_signatures via (InferenceDirection: *) * (Split: train) * (Debug: yes)
-#	reach compute_dev_signatures via (InferenceDirection: *) * (Split: dev) * (EvalData: *) * (Debug: yes)
-#	reach compute_eval_signatures via (InferenceDirection: *) * (Split: test) * (EvalData: *) * (Debug: yes)
-#}
