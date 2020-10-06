@@ -27,8 +27,6 @@ task baseline_generate : COD3S fairseq
 	grep "^[^PD]" ${results}/generate-test.txt > ${results}/generate_cands.log
 	cat ${results}/generate_cands.log | sed 's/^\([STOH].[0-9]\+\).*SEP\$\s\(.*\)$/\1\t\2/' > ${results}/generate_cands_no_pref.log
 
-#		--bpe 'sentencepiece' \
-#	--sentencepiece-model ${spm_model_dir}/spm.bpe.model \
 }
 
 task generate_mmi : COD3S fairseq
@@ -91,62 +89,60 @@ task generate_mmi : COD3S fairseq
 
 }
 
+plan generate {
+# seq2seq_baseline {
+reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
+* (TargetRep:seq) * (RandomSampling: no)
 
-plan seq2seq_baseline {
-	reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
-	* (TargetRep:seq) * (RandomSampling: no)
-}
-plan seq2both_baseline {
-	reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
-	* (TargetRep:both) * (RandomSampling: no)
-}
-plan s2s_rs {
-	reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
-	* (TargetRep:seq) * (RandomSampling: yes)
-}
+# seq2both_baseline {
+reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
+* (TargetRep:both) * (RandomSampling: no)
 
-plan beam_beam {
+# s2s_rs {
+reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
+* (TargetRep:seq) * (RandomSampling: yes)
+
+# beam_beam {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: beam) * (RandomSampling: no) * (HammingThreshold: yes)
-}
 
-plan beam_beam_rs {
+
+# beam_beam_rs {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: beam) * (RandomSampling: yes) * (HammingThreshold: yes)
-}
 
-plan beam_bidi {
+
+# beam_bidi {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: yes)
-}
 
-plan beam_bidi_no_div {
+
+# beam_bidi_no_div {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: no)
-}
 
-plan beam_bidi_rs {
+# beam_bidi_rs {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: yes)
-}
 
-plan bidi_bidi {
+
+# bidi_bidi {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: yes)
-}
 
-plan bidi_bidi_no_div {
+
+# bidi_bidi_no_div {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: no)
-}
 
-plan bidi_bidi_rs {
+
+# bidi_bidi_rs {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: yes)
-}
 
 
-plan bidi_bidi_rs_no_div {
+# bidi_bidi_rs_no_div {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: no)
 }
+
