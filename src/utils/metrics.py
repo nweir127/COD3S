@@ -4,7 +4,7 @@ from src.utils import *
 import numpy as np
 import math
 from scipy.spatial.distance import pdist, squareform
-from src.similarity_models import BertSimilarityModel, SBERTSimilarityModel
+from src.sbert_lsh_model import BertLSHModel, SBERTLSHModel
 
 OPTS = Config()
 for (k, _, v, _) in [
@@ -25,9 +25,9 @@ Device.set_seed(1234)
 ## set up tokenizer and BERT
 print("loading model...")
 if OPTS.bert_type in ['bert', 'pbert']:
-    sim_model = BertSimilarityModel(OPTS, Device)
+    sim_model = BertLSHModel(OPTS, Device)
 elif OPTS.bert_type in ['sbert']:
-    sim_model = SBERTSimilarityModel(OPTS, Device)
+    sim_model = SBERTLSHModel(OPTS, Device)
 else:
     raise NotImplementedError()
 
@@ -77,7 +77,7 @@ def diversity_bleu(output_set, n=2, reduce=True):
             total_i = 0
             sent = output_set[i]
             for other_sent in output_set[:i] + output_set[i:]:
-                bl = sentence_bleu(sent, other_sent)
+                bl = sentence_bleu(sent, [other_sent])
                 score = bl.bp * math.exp(
                     sum(map(lambda x: math.log(x) if x != 0.0 else -9999999999,
                             bl.precisions[:n])
@@ -95,7 +95,7 @@ def diversity_bleu(output_set, n=2, reduce=True):
             return flatten([[(x, y) for y in lst if x != y] for x in lst])
 
         def _pair_distance(sent, other_sent):
-            bl = sentence_bleu(sent, other_sent)
+            bl = sentence_bleu(sent, [other_sent])
             return 100 - bl.bp * math.exp(
                 sum(map(lambda x: math.log(x) if x != 0.0 else -9999999999,
                         bl.precisions[:n])

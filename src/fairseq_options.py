@@ -462,8 +462,29 @@ def add_checkpoint_args(parser):
 
 def add_common_eval_args(group):
     # fmt: off
-    group.add_argument('--path', metavar='FILE',
-                       help='path(s) to model file(s), colon separated')
+    group.add_argument('--remove-bpe', nargs='?', const='@@ ', default=None,
+                       help='remove BPE tokens before scoring (can be set to sentencepiece)')
+    group.add_argument('--quiet', action='store_true',
+                       help='only print final scores')
+    group.add_argument('--model-overrides', default="{}", type=str, metavar='DICT',
+                       help='a dictionary used to override model args at generation '
+                            'that were used during model training')
+    group.add_argument('--results-path', metavar='RESDIR', type=str, default=None,
+                       help='path to save eval results (optional)"')
+
+def add_cod3s_arguments(parser):
+    group = parser.add_argument_group("COD3S")
+    group.add_argument('--vanilla', action='store_true')
+    group.add_argument('--verbose', action='store_true',
+                       help='print examples during generation')
+    group.add_argument('--very-verbose', action='store_true',
+                       help='print all examples during generation')
+    group.add_argument("--integer-decode", action='store_true')
+    group.add_argument("--integer-decode-bits", type=int, default=8, metavar='N')
+    group.add_argument("--integer-decode-tokens", type=int, default=1, metavar='N')
+    group.add_argument('--forward-sequence-sampling', action='store_true')
+    group.add_argument('--forward-prefix-sampling', action='store_true')
+    group.add_argument('--debug', action='store_true')
     group.add_argument('--backward-prefix-path', metavar='FILE', default='',
                        help='path(s) to backward prefix model file(s)')
     group.add_argument('--backward-sequence-path', metavar='FILE', default='',
@@ -489,21 +510,6 @@ def add_common_eval_args(group):
                        help='edit distance threshold for keeping prefixes')
     group.add_argument('--sequence-inference', default='beam', choices=['beam','bidi'])
     group.add_argument('--order-by', default='score', choices=['prefix','score'])
-    group.add_argument('--remove-bpe', nargs='?', const='@@ ', default=None,
-                       help='remove BPE tokens before scoring (can be set to sentencepiece)')
-    group.add_argument('--quiet', action='store_true',
-                       help='only print final scores')
-    group.add_argument('--verbose', action='store_true',
-                       help='print examples during generation')
-    group.add_argument('--very-verbose', action='store_true',
-                       help='print all examples during generation')
-    group.add_argument('--model-overrides', default="{}", type=str, metavar='DICT',
-                       help='a dictionary used to override model args at generation '
-                            'that were used during model training')
-    group.add_argument('--results-path', metavar='RESDIR', type=str, default=None,
-                       help='path to save eval results (optional)"')
-    group.add_argument('--vanilla', action='store_true')
-
 
 def add_eval_lm_args(parser):
     group = parser.add_argument_group("LM Evaluation")
@@ -577,12 +583,6 @@ def add_generation_args(parser):
     group.add_argument('--print-alignment', action='store_true',
                        help='if set, uses attention feedback to compute and print alignment to source tokens')
     group.add_argument('--print-step', action='store_true')
-    group.add_argument("--integer-decode", action='store_true')
-    group.add_argument("--integer-decode-bits", type=int, default=8, metavar='N')
-    group.add_argument("--integer-decode-tokens", type=int, default=1, metavar='N')
-    group.add_argument('--forward-sequence-sampling', action='store_true')
-    group.add_argument('--forward-prefix-sampling', action='store_true')
-    group.add_argument('--debug',action='store_true')
 
     # arguments for iterative refinement generator
     group.add_argument('--iter-decode-eos-penalty', default=0.0, type=float, metavar='N',

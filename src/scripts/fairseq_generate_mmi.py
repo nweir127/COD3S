@@ -16,7 +16,9 @@ from argparse import Namespace
 import torch
 import numpy as np
 from collections import namedtuple
-from fairseq import bleu, checkpoint_utils, options, tasks, utils
+from fairseq import bleu, checkpoint_utils, tasks, utils
+import src.fairseq_options as options
+import src.fairseq_cod3_utils as fairseq_cod3_utils
 from fairseq.logging import progress_bar
 from fairseq.logging.meters import StopwatchMeter, TimeMeter
 from src.utils import read_sentences
@@ -356,7 +358,7 @@ def _main(args, output_file):
             if args.prefix_inference == 'bidi':
                 # try:
                 if args.verbose: print('reranking prefixes...')
-                forward_prefixes = utils.rerank_bidi(
+                forward_prefixes = fairseq_cod3_utils.rerank_bidi(
                     forward_prefixes, model_dict=model_dict,
                     direction='bwd_prefix', args=args, sample=sample, tgt_dict=tgt_dict
                 )
@@ -456,7 +458,7 @@ def _main(args, output_file):
             # 	hypos.append(beam_out)
             if args.sequence_inference == 'bidi':
                 if args.verbose: print(f'reranking {iter}th best sequences...')
-                beam_out = utils.rerank_bidi(
+                beam_out = fairseq_cod3_utils.rerank_bidi(
                     beam_out, model_dict=model_dict,
                     direction='bwd_seq', args=args, sample=sample, tgt_dict=tgt_dict)
 
