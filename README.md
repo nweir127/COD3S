@@ -5,6 +5,9 @@ This repository houses the cod3 for
    
 We train seq2seq models to condition generation on semantic similarity-preserving LSH bit signatures of SBERT embeddings for the purpose of diverse causal generation. 
 
+ <img src="img/cod3s_overview_camera_ready.png" width="500">
+
+
 
 ## Installation
 1. This repository uses [conda](https://docs.conda.io/en/latest/miniconda.html) to manage packages and [Ducttape](https://github.com/jhclark/ducttape) to manage intermediate results 
