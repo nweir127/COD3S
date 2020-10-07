@@ -26,4 +26,4 @@ To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of th
 Note that tasks will automatically run the other tasks required by their dependencies (`train` will run `download_data` etc).
 ### Automatic Diversity Evaluation
 To run automatic diversity evaluation after generation:
-`CUDA_VISIBLE_DEVICES=<device> PYTHONPATH=. python src/scripts/diversity_evaluation --results_dir=exp`
+`CUDA_VISIBLE_DEVICES=<device> PYTHONPATH=. python src/scripts/diversity_evaluation.py --results_dir=exp`
