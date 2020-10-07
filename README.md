@@ -1,7 +1,7 @@
 # COD3S
 This repository houses the cod3 for 
- - Nathaniel Weir, Joao Sedoc, and Benjamin Van Durme (2020): 
-   [COD3S: Diverse Generation with Discrete Semantic Signatures.](https://arxiv.org/pdf/2010.02882.pdf) In _Proceedings of EMNLP_.
+ - [Nathaniel Weir, Joao Sedoc, and Benjamin Van Durme (2020): 
+   COD3S: Diverse Generation with Discrete Semantic Signatures.](https://arxiv.org/pdf/2010.02882.pdf) In _Proceedings of EMNLP_.
 ## Installation
 1. This repository uses [conda](https://docs.conda.io/en/latest/miniconda.html) to manage packages and [Ducttape](https://github.com/jhclark/ducttape) to manage intermediate results 
 of the experiment pipeline. Follow the latter's [quickstart guide](https://github.com/jhclark/ducttape#quick-start) to add ducttape to your path. Note that the tapes will download and pip install `fairseq` for you.  
