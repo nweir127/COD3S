@@ -25,7 +25,7 @@ func compute_signatures : COD3S
 		params+=" --source_lang ${source_lang} --target_lang ${target_lang}"
 		params+=" --source_rep both,seq --target_rep both,seq"
 		params+=" --debug $debug --gpuid ${gpu_id_0}"
-		batch_size=$(($device_space / 11 ))
+		batch_size=$(($device_space / 12 ))
 		params+=" --batch_size ${batch_size}"
 
 		params+=" --local_rank $jobcounter --num_thread $num_gpus"
@@ -53,7 +53,7 @@ func compute_signatures : COD3S
 
 task compute_train_signatures calls compute_signatures : COD3S
 	< data_dir=(Direction: c2e=$so_data@data e2c=$because_data@data)
-	> train_out
+	> out
 	:: source_lang=@ target_lang=@ split=@ lsh_bits=@
 	:: distributed=(Split: train="yes" dev="no" test="no")
 	:: gpu_id=$gpu_id
@@ -65,16 +65,16 @@ task compute_eval_signatures calls compute_signatures : COD3S
 	< data_dir=(EvalData:
 		copa=(Direction: c2e=$cause2effect_copa@data e2c=$effect2cause_copa@data)
 		causalbank=(Direction: c2e=$cause2effect_cb@data e2c=$effect2cause_cb@data))
-	> eval_out
+	> out
 	:: source_lang=@ target_lang=@ split=@ lsh_bits=@
 	:: gpu_id=@ device_space=@
 	:: distributed="no"
 	:: debug=(Debug: no=0 yes=1)
 
 task compute_signatures
-	< out_dir=(Split: train=$train_out@compute_train_signatures
-		   		  dev=$train_out@compute_train_signatures
-		   		  test=$eval_out@compute_eval_signatures)
+	< out_dir=(Split: train=$out@compute_train_signatures
+		   		  dev=$out@compute_train_signatures
+		   		  test=$out@compute_eval_signatures)
 	> out { ln -s $out_dir $out }
 
 
