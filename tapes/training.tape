@@ -95,13 +95,13 @@ task fairseq_train : fairseq
 
 task ensemble
 	< seq2both=(Direction: c2e=$out@fairseq_train[SourceRep:seq,TargetRep:both,Direction:c2e]
-						   e2c=$out@fairseq_train[SourceRep:seq,TargetRep:both,Direction:e2c])
+			       e2c=$out@fairseq_train[SourceRep:seq,TargetRep:both,Direction:e2c])
 	< seq2prefix=(Direction: c2e=$out@fairseq_train[SourceRep:seq,TargetRep:prefix,Direction:c2e]
-	 						 e2c=$out@fairseq_train[SourceRep:seq,TargetRep:prefix,Direction:e2c])
+			         e2c=$out@fairseq_train[SourceRep:seq,TargetRep:prefix,Direction:e2c])
 	< b_prefix2seq=(Direction: c2e=$out@fairseq_train[SourceRep:prefix,TargetRep:seq,Direction:e2c]
-							   e2c=$out@fairseq_train[SourceRep:prefix,TargetRep:seq,Direction:c2e])
+			           e2c=$out@fairseq_train[SourceRep:prefix,TargetRep:seq,Direction:c2e])
 	< b_seq2seq=(Direction: c2e=$out@fairseq_train[SourceRep:seq,TargetRep:seq,Direction:e2c]
-	 						e2c=$out@fairseq_train[SourceRep:seq,TargetRep:seq,Direction:c2e])
+			        e2c=$out@fairseq_train[SourceRep:seq,TargetRep:seq,Direction:c2e])
 	> out {
 	mkdir $out
 	ln -s $seq2both/checkpoint_last.pt $out/s2b_model
