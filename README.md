@@ -21,7 +21,12 @@ To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of th
 | `download_human_eval` | download 100-item evaluation sets from COPA and Causalbank, plus outputs from other Li et al. models used in human evaluation |
 | `compute_cod3s`  | Computes LSH signatures of all training and evaluation data      |
 | `train`   |    Train forward/backward models on downloaded cod3d data       |
-| `generate` | Run sequence inference over COPA and Causalbank as shown in figure 2 of paper |
+| `generate` | Run sequence inferences over COPA and Causalbank as shown in figure 2 of paper -- comment out `reach` statements in `inference.tape` to only run a subset|
+| `generate_cod3s` | Download pretrained COD3S model and run COD3S+RS+MMI | 
+| `generate_seq2seq` | Download pretrained COD3S model and run seq2seq baseline | 
+
+
+
 
 Note that tasks will automatically run the other tasks required by their dependencies (`train` will run `download_data` etc).
 ### Automatic Diversity Evaluation
