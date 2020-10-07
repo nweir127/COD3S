@@ -25,7 +25,7 @@ func compute_signatures : COD3S
 		params+=" --source_lang ${source_lang} --target_lang ${target_lang}"
 		params+=" --source_rep both,seq --target_rep both,seq"
 		params+=" --debug $debug --gpuid ${gpu_id_0}"
-		batch_size=$(($device_space / 11 ))
+		batch_size=$(($device_space / 12 ))
 		params+=" --batch_size ${batch_size}"
 
 		params+=" --local_rank $jobcounter --num_thread $num_gpus"
