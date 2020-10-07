@@ -44,7 +44,7 @@ To run automatic diversity evaluation after generation:
 
 ## Citation
 
-If you use any of this codebase in your work, please cite our paper:
+If you use any of this cod3base in your work, please cite our paper:
 
 ```
 @inproceedings{weir-etal-20-cod3s,
