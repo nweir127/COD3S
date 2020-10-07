@@ -3,7 +3,7 @@ This repository houses the cod3 for
  - [Nathaniel Weir, Joao Sedoc, and Benjamin Van Durme (2020): 
    COD3S: Diverse Generation with Discrete Semantic Signatures.](https://arxiv.org/pdf/2010.02882.pdf) In _Proceedings of EMNLP_.
    
-We train seq2seq models to condition generation on semantic similarity-preserving LSH bit signatures of SBERT embeddings for the purpose of diverse causal generation. 
+We train seq2seq models for the purpose of diverse causal generation by generating semantic similarity-preserving LSH bit signatures of sentences' SBERT embeddings. 
 
  <img src="img/cod3s_overview_camera_ready.png" width="500">
 
