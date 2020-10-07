@@ -25,7 +25,7 @@ To run a task, run `ducttape tapes/main.tape -p <TASK>`, where task is one of th
 | `generate_cod3s` | Download pretrained COD3S model and run COD3S+RS+MMI | 
 | `generate_seq2seq` | Download pretrained COD3S model and run seq2seq baseline | 
 
-
+Note that whenever you run a task, ducttape will spit out a `ducttape_task.sh` script in the task's directory that you can use/modify to fit your use case.
 
 
 Note that tasks will automatically run the other tasks required by their dependencies (`train` will run `download_data` etc).
