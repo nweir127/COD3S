@@ -109,6 +109,7 @@ task ensemble
 	ln -s $b_prefix2seq/checkpoint_last.pt $out/bp2s_model
 	ln -s $b_seq2seq/checkpoint_last.pt $out/bs2s_model
 
+	# hack to not duplicate parameters
 	ln -s "`dirname ${seq2both}`/outbin" $out/s2b_bin
 	ln -s "`dirname ${seq2prefix}`/outbin" $out/s2p_bin
 	ln -s "`dirname ${b_prefix2seq}`/outbin" $out/bp2s_bin

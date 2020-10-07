@@ -1,5 +1,5 @@
 task baseline_generate : COD3S fairseq
-	< checkpoint_dir=$out@fairseq_train[SourceRep:seq]
+	< checkpoint_dir=(Pretrained: no=$out@fairseq_train[SourceRep:seq] yes=$out@gather_pretrained_model[SourceRep:seq])
 	< spm_model_dir=@train_spm
 	< bin=$outbin@eval_preproc
 	> results
@@ -30,7 +30,7 @@ task baseline_generate : COD3S fairseq
 }
 
 task generate_mmi : COD3S fairseq
-	< models=$out@ensemble
+	< models=(Pretrained: no=$out@ensemble yes=$out@pretrained_ensemble)
 	< eval_bin=$outbin@eval_preproc
 	< spm_model_dir=@train_spm
 	> out
@@ -89,7 +89,7 @@ task generate_mmi : COD3S fairseq
 
 }
 
-plan generate {
+plan generate_all {
 # seq2seq_baseline {
 reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 * (TargetRep:seq) * (RandomSampling: no)
@@ -106,11 +106,9 @@ reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (Eval
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: beam) * (RandomSampling: no) * (HammingThreshold: yes)
 
-
 # beam_beam_rs {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: beam) * (RandomSampling: yes) * (HammingThreshold: yes)
-
 
 # beam_bidi {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
@@ -125,21 +123,17 @@ reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData:
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: beam) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: yes)
 
-
 # bidi_bidi {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: yes)
-
 
 # bidi_bidi_no_div {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: no) * (HammingThreshold: no)
 
-
 # bidi_bidi_rs {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)
 	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: yes)
-
 
 # bidi_bidi_rs_no_div {
 reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: *)

@@ -54,3 +54,49 @@ task human_eval_data > cause2effect effect2cause {
 plan download_human_eval {
 	reach human_eval_data
 }
+
+
+task pretrained_models > out {
+	file_id="1jQI993bm1orzh3oywWseWYTe8T3fknfQ"
+	wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=${file_id}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${file_id}"  -O pretrained_cod3s_models.zip && rm -rf /tmp/cookies.txt
+	unzip pretrained_cod3s_models.zip
+	ln -s exp/fairseq_train $out
+}
+
+task gather_pretrained_model < in=$out@pretrained_models > out outbin
+:: direction=(Direction: c2e e2c)
+:: source_rep=@ target_rep=@
+{
+	ln -s $in/Direction.${direction}+DownloadPreprocessed.yes+SourceRep.${source_rep}+TargetRep.${target_rep}/out $out
+	ln -s $in/Direction.${direction}+DownloadPreprocessed.yes+SourceRep.${source_rep}+TargetRep.${target_rep}/outbin $outbin
+
+
+}
+
+task pretrained_ensemble
+	< seq2both=(Direction: c2e=$out@gather_pretrained_model[SourceRep:seq,TargetRep:both,Direction:c2e]
+						   e2c=$out@gather_pretrained_model[SourceRep:seq,TargetRep:both,Direction:e2c])
+	< seq2prefix=(Direction: c2e=$out@gather_pretrained_model[SourceRep:seq,TargetRep:prefix,Direction:c2e]
+	 						 e2c=$out@gather_pretrained_model[SourceRep:seq,TargetRep:prefix,Direction:e2c])
+	< b_prefix2seq=(Direction: c2e=$out@gather_pretrained_model[SourceRep:prefix,TargetRep:seq,Direction:e2c]
+							   e2c=$out@gather_pretrained_model[SourceRep:prefix,TargetRep:seq,Direction:c2e])
+	< b_seq2seq=(Direction: c2e=$out@gather_pretrained_model[SourceRep:seq,TargetRep:seq,Direction:e2c]
+	 						e2c=$out@gather_pretrained_model[SourceRep:seq,TargetRep:seq,Direction:c2e])
+	> out {
+	mkdir $out
+	ln -s $seq2both/checkpoint_last.pt $out/s2b_model
+	ln -s $seq2prefix/checkpoint_last.pt $out/s2p_model
+	ln -s $b_prefix2seq/checkpoint_last.pt $out/bp2s_model
+	ln -s $b_seq2seq/checkpoint_last.pt $out/bs2s_model
+
+	# hack to not duplicate parameters
+	ln -s "`dirname ${seq2both}`/outbin" $out/s2b_bin
+	ln -s "`dirname ${seq2prefix}`/outbin" $out/s2p_bin
+	ln -s "`dirname ${b_prefix2seq}`/outbin" $out/bp2s_bin
+	ln -s "`dirname ${b_seq2seq}`/outbin" $out/bs2s_bin
+
+}
+
+plan download_pretrained_models {
+	reach pretrained_models
+}

@@ -79,5 +79,5 @@ task compute_signatures
 
 
 plan compute_cod3s {
-	reach compute_signatures via (Direction: *) * (Split: *) * (EvalData: *) * (Debug: yes)
+	reach compute_signatures via (Direction: *) * (Split: *) * (EvalData: *) * (Debug: no)
 }

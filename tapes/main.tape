@@ -39,3 +39,13 @@ import "training.tape"
 import 'inference.tape'
 
 
+plan generate_cod3s {
+reach generate_mmi via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: copa)
+	* (PrefInference: bidi) * (SeqInference: bidi) * (RandomSampling: yes) * (HammingThreshold: yes) * (Pretrained: yes)
+
+}
+
+plan generate_seq2seq {
+reach baseline_generate via (DownloadPreprocessed: yes) * (Direction: *) * (EvalData: copa)
+	* (TargetRep:seq) * (RandomSampling: no) * (Pretrained: yes)
+}
