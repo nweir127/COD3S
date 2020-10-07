@@ -32,3 +32,21 @@ Note that tasks will automatically run the other tasks required by their depende
 ### Automatic Diversity Evaluation
 To run automatic diversity evaluation after generation:
 `CUDA_VISIBLE_DEVICES=<device> PYTHONPATH=. python src/scripts/diversity_evaluation.py --results_dir=exp`
+
+
+
+## Citation
+
+If you use any of this codebase in your work, please cite our paper:
+
+```
+@inproceedings{weir-etal-20-cod3s,
+    title = "{COD3S}: diverse generation with discrete semantic signatures",
+    author = "Weir, Nathaniel  and
+      Sedoc, Jo{\~a}o  and
+      Van {D}urme, Benjamin",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020"
+}
+```
