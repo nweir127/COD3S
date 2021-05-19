@@ -1,4 +1,4 @@
-package COD3S :: .versioner=disk .path="/srv/local1/nweir/COD3S" {}
+package COD3S :: .versioner=disk .path="/path/to/COD3S" {}
 
 package fairseq
     :: .versioner=git .repo="https://github.com/nweir127/fairseq-COD3S" .ref=HEAD {
