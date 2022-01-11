@@ -57,8 +57,9 @@ plan download_human_eval {
 
 
 task pretrained_models > out {
-	file_id="1jQI993bm1orzh3oywWseWYTe8T3fknfQ"
-	wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=${file_id}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${file_id}"  -O pretrained_cod3s_models.zip && rm -rf /tmp/cookies.txt
+	# file_id="1jQI993bm1orzh3oywWseWYTe8T3fknfQ"
+	# wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=${file_id}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${file_id}"  -O pretrained_cod3s_models.zip && rm -rf /tmp/cookies.txt
+	wget https://nlp.jhu.edu/causalbank/pretrained_cod3s_models.zip
 	unzip pretrained_cod3s_models.zip
 	ln -s exp/fairseq_train $out
 }
