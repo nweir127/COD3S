@@ -27,7 +27,8 @@ task cod3d_data
 	> cause2effect_cb effect2cause_cb cause2effect_copa effect2cause_copa
 	{
 	file_id="1m8t66Tj6hlu0PNYnf8MmV2prMlEAhk2k"
-	wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=${file_id}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${file_id}"  -O cod3d_causalbank.zip && rm -rf /tmp/cookies.txt
+	# wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=${file_id}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${file_id}"  -O cod3d_causalbank.zip && rm -rf /tmp/cookies.txt
+	wget https://nlp.jhu.edu/causalbank/cod3d_causalbank.zip
 	unzip cod3d_causalbank.zip
 
 	# make visible to ducttape
